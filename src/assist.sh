@@ -7,13 +7,13 @@ fi
 
 command=$1
 shift
-args=$@
+args=( "$@" )
 
 temp_file=$(mktemp)
-function clean_exit { rm -f $temp_file; exit 0; }
+function clean_exit { rm -f "$temp_file"; exit 0; }
 
 trap clean_exit INT
-$command $args > $temp_file < /dev/null
+$command "${args[@]}" > "$temp_file" < /dev/null
 
 return_code=$?
 printf "Command finished with code: %d\n" "$return_code"
@@ -21,19 +21,19 @@ printf "Command finished with code: %d\n" "$return_code"
 if [[ -s $temp_file ]]; then
     while true; do
         echo -n "Display output in: (e/p/o/n/?) "
-        read option
+        read -r option
 
         case $option in
             e)
-                ${EDITOR:-nano} $temp_file
+                ${EDITOR:-nano} "$temp_file"
                 break ;;
 
             p)
-                ${PAGER:-less} $temp_file
+                ${PAGER:-less} "$temp_file"
                 break ;;
 
             o)
-                cat $temp_file
+                cat "$temp_file"
                 break ;;
 
             n)
