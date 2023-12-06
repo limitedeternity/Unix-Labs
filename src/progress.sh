@@ -10,4 +10,6 @@ if ! [[ -f "$1" ]]; then
     exit 1
 fi
 
-tail -f "$1" | grep -oP '\[\d+/\d+\]' | awk '{print "[" $0 "]"}'
+# python3 test_progress.py
+# ./progress.sh ../test/build.log
+tail -n0 -f "$1" | grep -oP '\[\d+/\d+\]' --line-buffered | awk '{ print $0 "\033[1A"; }'
